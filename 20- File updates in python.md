@@ -10,8 +10,9 @@ This project automates the process of updating an "allow list" of IP addresses s
 The file is accessed using Python's built-in `open()` function in read mode (`'r'`). This allows us to retrieve the current list of allowed IP addresses:
 
 ```python
-with open("allow_list.txt", "r") as file:
-    data = file.read()
+file = open("allow_list.txt", "r")
+data = file.read()
+file.close()
 ```
 
 ## Read the File Contents
@@ -39,42 +40,46 @@ This gives a list of strings:
 
 ## Iterate Through the Remove List
 
-A separate list, `remove_list`, contains the IPs that need to be deleted from the allow list. We loop through this list:
+We define a separate list of IP addresses that we want to remove:
 
 ```python
 remove_list = ['192.168.0.2', '10.0.0.1']
 ```
 
-## Remove IP Addresses That Are on the Remove List
-
-Using a list comprehension, we filter out IPs that appear in `remove_list`:
+We use a `for` loop to iterate through the `remove_list`, and use `.remove()` to eliminate matching IPs from the `allow_list`:
 
 ```python
-updated_list = [ip for ip in allow_list if ip not in remove_list]
+for ip in remove_list:
+    if ip in allow_list:
+        allow_list.remove(ip)
 ```
 
-This results in:
+## Remove IP Addresses That Are on the Remove List
+
+After the loop executes, the `allow_list` is now updated:
 
 ```python
-['192.168.0.1']
+print(allow_list)
+# Output: ['192.168.0.1']
 ```
 
 ## Update the File with the Revised List of IP Addresses
 
-We write the updated IP list back to the original file, joining the list into a comma-separated string:
+We write the updated IP list back to the original file using `.write()`:
 
 ```python
-with open("allow_list.txt", "w") as file:
-    file.write(",".join(updated_list))
+file = open("allow_list.txt", "w")
+file.write(",".join(allow_list))
+file.close()
 ```
 
 ## Summary
 
 This algorithm:
-- Reads a list of IP addresses from a file.
-- Converts the string into a list format.
-- Iteratively compares each entry with a predefined remove list.
-- Removes matching entries.
-- Writes the cleaned-up list back to the original file.
+- Uses `.read()` to extract content from a file.
+- Splits the content into a list.
+- Iterates with a `for` loop through a remove list.
+- Removes matching entries using `.remove()`.
+- Uses `.write()` to overwrite the file with the updated list.
 
-This approach is efficient, readable, and adaptable for various file-based filtering tasks.
+This step-by-step method maintains clarity while leveraging basic file and list operations in Python.
